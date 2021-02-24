@@ -18,15 +18,26 @@ function Todo() {
   const listsSelector = useSelector(getLists);
   const cardsSelector = useSelector(getCards);
 
-  const onDragEnd = (result) => {
+  const handle_onDragStar =(result)=>{
+     return{
+          
+     }
+  }
+  const handle_onDragUpdate =(result)=>{
+    return{
+         
+    }
+ }
+  const handle_onDragEnd = (result) => {
     const { type } = result;
-
     if (type === 'LIST') {
       dispatch(onDragEndList(result));
+      console.log(result)
       return false;
     }
 
     if (type === 'CARD') {
+      console.log(result)
       dispatch(onDragEndCard(result));
       return false;
     }
@@ -39,7 +50,12 @@ function Todo() {
         width: 340 * columnsSelector.length || 1,
       }}
     >
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext
+       onDragStart={handle_onDragStar}
+       onDragUpdate={handle_onDragUpdate}
+       onDragEnd={handle_onDragEnd}
+
+       >
         <Droppable droppableId="all-lists" direction="horizontal" type="LIST">
           {(provided) => {
             return (

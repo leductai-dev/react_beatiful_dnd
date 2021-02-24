@@ -1,8 +1,14 @@
 import { createSelector } from 'reselect';
 
 export const getColumns = createSelector(
-  (state) => state.todo,
-  (todo) => todo.columns,
+  (state) => {
+    console.log(state)
+   return state.todo
+  },
+  (todo) => {
+    console.log(todo)
+    return todo.columns
+  },
 );
 
 export const getLists = createSelector(
@@ -14,3 +20,4 @@ export const getCards = createSelector(
   (state) => state.todo,
   (todo) => todo.cards,
 );
+

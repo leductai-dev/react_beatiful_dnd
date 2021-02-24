@@ -150,7 +150,6 @@ const reducers = (state = initialState, { type, payload }) => {
       const { listId, cardId } = payload;
       const newCards = state.cards;
       delete newCards[cardId];
-
       const newLists = {
         ...state.lists,
         [listId]: {
@@ -158,13 +157,13 @@ const reducers = (state = initialState, { type, payload }) => {
           cards: state.lists[listId].cards.filter((card) => card !== cardId),
         },
       };
-
       return {
         ...state,
         lists: newLists,
         cards: newCards,
       };
     }
+
 
     case EDIT_CARD: {
       const { cardId, cardText } = payload;
@@ -194,17 +193,30 @@ const reducers = (state = initialState, { type, payload }) => {
     case DRAG_END_CARD: {
       const { destination, source } = payload;
       if (destination === null) return state;
-
       // in the same list
       if (source.droppableId === destination.droppableId) {
         const droppedIdStart = source.droppableId;
         const lists = state.lists[droppedIdStart];
         const newCards = [...lists.cards];
-        [newCards[source.index], newCards[destination.index]] = [
-          newCards[destination.index],
-          newCards[source.index],
-        ];
-
+        const destination_index = destination.index
+        var source_index = source.index
+          if(destination_index > source_index){
+            while(source_index != destination_index){
+              const tmp  = newCards[source_index]
+              newCards[source_index] = newCards[source_index+1]
+              newCards[source_index + 1] = tmp
+              source_index++
+            }
+          }
+          else{
+            while(source_index != destination_index){
+              const tmp  = newCards[source_index]
+              newCards[source_index] = newCards[source_index-1]
+              newCards[source_index - 1] = tmp
+              source_index--
+            }
+          }
+          
         return {
           ...state,
           lists: {
@@ -216,6 +228,25 @@ const reducers = (state = initialState, { type, payload }) => {
           },
         };
       }
+      /* if (source.droppableId === destination.droppableId) {
+        const droppedIdStart = source.droppableId;
+        const lists = state.lists[droppedIdStart];
+        const newCards = [...lists.cards];
+        [newCards[source.index], newCards[destination.index]] = [
+          newCards[destination.index],
+          newCards[source.index],
+        ];
+        return {
+          ...state,
+          lists: {
+            ...state.lists,
+            [droppedIdStart]: {
+              ...lists,
+              cards: newCards,
+            },
+          },
+        };
+      } */
 
       // other list
       if (source.droppableId !== destination.droppableId) {
@@ -258,3 +289,6 @@ const reducers = (state = initialState, { type, payload }) => {
 };
 
 export default reducers;
+
+
+

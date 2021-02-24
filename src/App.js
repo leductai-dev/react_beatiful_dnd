@@ -2,7 +2,6 @@ import React from 'react';
 
 import Todo from 'features/Todo';
 import Layout from 'containers/Layout/Layout';
-
 function App() {
   return (
     <div>

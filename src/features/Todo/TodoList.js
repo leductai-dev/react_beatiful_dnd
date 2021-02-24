@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-
+import styled  from 'styled-components'
 // carbon core
 import TextInput from 'carbon-components-react/lib/components/TextInput';
 import ButtonIcon from 'components/atoms/ButtonIcon';
@@ -34,44 +34,55 @@ function TodoList({ title, cards, listId, index }) {
     dispatch(removeList(listId));
   };
 
+  const List = styled.div`
+  flex: 1 1 auto;
+  padding: 0 5px;
+  min-height: 10px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-bottom: 0;
+  background-color: ${prop => prop.isDraggingOver ? 'green':'inherit'}
+  `
+
   return (
     <Draggable draggableId={String(listId)} index={index}>
       {(provided) => (
         <div
           {...provided.draggableProps}
-          {...provided.dragHandleProps}
           ref={provided.innerRef}
           className="todoList"
         >
-          <Droppable droppableId={String(listId)} type="CARD">
-            {(providedDrop) => (
-              <>
-                <div>
-                  {isEditing ? (
-                    <TextInput
-                      id="test2"
-                      autoFocus
-                      onFocus={handleFocus}
-                      onBlur={handleEditTitleList}
-                      onChange={(e) => setListTitle(e.target.value)}
-                      value={listTitle}
-                    />
-                  ) : (
-                    <div className="todoList__head">
-                      <div
-                        className="todoList__head__title"
-                        onClick={() => setIsEditing(true)}
-                      >
-                        <div>{title}</div>
-                      </div>
-                      <ButtonIcon icon={TrashCan32} onClick={handleRemove} />
-                    </div>
-                  )}
-                </div>
+        <div>
+            {isEditing ? (
+              <TextInput
+                id="test2"
+                autoFocus
+                onFocus={handleFocus}
+                onBlur={handleEditTitleList}
+                onChange={(e) => setListTitle(e.target.value)}
+                value={listTitle}
+              />
+            ) : (
+              <div {...provided.dragHandleProps} className="todoList__head">
                 <div
+                  className="todoList__head__title"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <div>{title}</div>
+                </div>
+                <ButtonIcon icon={TrashCan32} onClick={handleRemove} />
+              </div>
+                  )}
+          </div>
+          <Droppable droppableId={String(listId)} type="CARD" direction="vertical" > 
+            {(providedDrop,snapshot) => (
+              <>
+          
+                <List
                   {...providedDrop.droppableProps}
                   ref={providedDrop.innerRef}
-                  className="todoList__content"
+                  isDraggingOver = {snapshot.isDraggingOver}
+                
                 >
                   {cards.map((card, idx) => {
                     return (
@@ -86,7 +97,7 @@ function TodoList({ title, cards, listId, index }) {
                     );
                   })}
                   {providedDrop.placeholder}
-                </div>
+                </List>
                 <TodoCreate listId={listId} />
               </>
             )}
